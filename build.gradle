@@ -1,0 +1,80 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+	id 'org.springframework.boot' version '3.0.3-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.jetbrains.kotlin.jvm' version '1.7.22'
+	id 'org.jetbrains.kotlin.plugin.spring' version '1.7.22'
+	id 'org.jetbrains.kotlin.plugin.jpa' version '1.7.22'
+	id "org.jetbrains.kotlin.plugin.allopen" version "1.7.22"
+	id "org.flywaydb.flyway" version "9.8.1"
+}
+
+group = 'de.rlang'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+	implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+	implementation 'org.postgresql:postgresql:42.5.3'
+	implementation "io.arrow-kt:arrow-core:1.1.2"
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation "io.mockk:mockk:1.13.4"
+	testImplementation 'com.h2database:h2:2.1.214'
+}
+
+tasks.withType(KotlinCompile) {
+	kotlinOptions {
+		freeCompilerArgs = ['-Xjsr305=strict']
+		jvmTarget = '17'
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+task testUnit(type: Test) {
+	group = 'verification'
+	useJUnitPlatform {
+		excludeTags 'Integration'
+	}
+}
+
+task testIntegration(type: Test) {
+	group = 'verification'
+	dependsOn flywayClean
+	flyway {
+		url = "jdbc:postgresql://localhost:5433/product_configurator"
+		user = "product_configurator"
+		password = "product_configurator"
+		cleanDisabled = false
+	}
+	useJUnitPlatform {
+		includeTags 'Integration'
+	}
+}
+
+allOpen {
+	annotation "jakarta.persistence.Entity"
+	annotation "jakarta.persistence.Embeddable"
+	annotation" jakarta.persistence.MappedSuperclass"
+}
+
+flyway {
+	validateMigrationNaming = true
+}

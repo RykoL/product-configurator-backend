@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  db-test:
+    image: postgres
+    container_name: product-configurator-db-test
+    environment:
+      - POSTGRES_DB"product_configurator
+      - POSTGRES_USER=product_configurator
+      - POSTGRES_PASSWORD=product_configurator
+    ports:
+      - "5433:5432"
