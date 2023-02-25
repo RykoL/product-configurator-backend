@@ -1,5 +1,6 @@
 package de.rlang.productconfigurator.scene.domain.service
 
+import arrow.core.Either
 import de.rlang.productconfigurator.scene.domain.model.Environment
 import de.rlang.productconfigurator.scene.domain.model.Scene
 import de.rlang.productconfigurator.scene.domain.ports.outbound.EnvironmentPort
@@ -27,7 +28,7 @@ class ChangeEnvironmentServiceTest {
             environment = Environment(1, "Studio")
         )
 
-        every { environmentPort.getEnvironment(3) } returns Environment(3, "Beach")
+        every { environmentPort.getEnvironment(3) } returns Either.Right(Environment(3, "Beach"))
 
 
         val expectedScene = Scene(2, "New Scene", mutableListOf(), environment = Environment(3, "Beach"))
@@ -36,6 +37,6 @@ class ChangeEnvironmentServiceTest {
         val scene = changeEnvironmentService.changeEnvironment(2, 3)
 
         verify { scenePort.saveScene(expectedScene) }
-        assertEquals(expectedScene, scene)
+        assertEquals(Either.Right(expectedScene), scene)
     }
 }

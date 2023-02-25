@@ -9,3 +9,8 @@ services:
       - POSTGRES_PASSWORD=product_configurator
     ports:
       - "5432:5432"
+  file-server:
+    image: nginx
+    container_name: product-configurator-file-server
+    ports:
+      - "8081:80"

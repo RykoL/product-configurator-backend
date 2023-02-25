@@ -1,5 +1,6 @@
 package de.rlang.productconfigurator.scene.application
 
+import arrow.core.Either
 import de.rlang.productconfigurator.scene.application.request.ChangeEnvironmentRequest
 import de.rlang.productconfigurator.scene.application.request.CreateSceneRequest
 import de.rlang.productconfigurator.scene.domain.model.Environment
@@ -7,6 +8,7 @@ import de.rlang.productconfigurator.scene.domain.model.Scene
 import de.rlang.productconfigurator.scene.domain.ports.inbound.ChangeEnvironmentUseCase
 import de.rlang.productconfigurator.scene.domain.ports.inbound.CreateSceneUseCase
 import de.rlang.productconfigurator.scene.domain.ports.inbound.GetSceneUseCase
+import de.rlang.productconfigurator.scene.infrastructure.SceneRepository
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -18,11 +20,13 @@ class SceneControllerTest {
     val createSceneUseCase = mockk<CreateSceneUseCase>()
     val getSceneUseCase = mockk<GetSceneUseCase>()
     val changeEnvironmentUseCase = mockk<ChangeEnvironmentUseCase>()
+    val sceneRepository = mockk<SceneRepository>()
     val webTestClient = WebTestClient.bindToController(
         SceneController(
             createSceneUseCase,
             getSceneUseCase,
-            changeEnvironmentUseCase
+            changeEnvironmentUseCase,
+            sceneRepository
         )
     ).build()
 
@@ -79,7 +83,7 @@ class SceneControllerTest {
         val sceneId = 1L
 
         every { changeEnvironmentUseCase.changeEnvironment(sceneId, changeEnvironmentRequest.environmentId) } returns
-                Scene(1, "New Scene 1", mutableListOf(), Environment(2, "Beach"))
+                Either.Right(Scene(1, "New Scene 1", mutableListOf(), Environment(2, "Beach")))
 
         webTestClient.put().uri("/v1/scenes/$sceneId/environment")
             .body(Mono.just(changeEnvironmentRequest), ChangeEnvironmentRequest::class.java)
