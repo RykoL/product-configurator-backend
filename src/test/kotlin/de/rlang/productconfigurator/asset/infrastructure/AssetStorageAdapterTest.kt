@@ -3,10 +3,7 @@ package de.rlang.productconfigurator.asset.infrastructure
 import de.rlang.productconfigurator.asset.configuration.AssetStorageConfiguration
 import de.rlang.productconfigurator.asset.domain.entity.AssetEntity
 import de.rlang.productconfigurator.asset.domain.model.AssetType
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.core.io.buffer.DataBuffer
@@ -15,6 +12,7 @@ import org.springframework.http.codec.multipart.FilePart
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.net.URI
+import java.net.URL
 import java.nio.file.Path
 import kotlin.io.path.Path
 
@@ -35,19 +33,18 @@ class AssetStorageAdapterTest {
     fun `properly constructs the location for the asset to be served`() {
         val assetRepository = mockk<AssetRepository>()
         val assetStorageConfiguration = AssetStorageConfiguration(
-            "http://localhost:8081/assets",
+            "http://localhost:8081/assets/",
             "./assets"
         )
         val assetStorageAdapter = AssetStorageAdapter(assetRepository, assetStorageConfiguration)
-
         assertEquals(
-            URI.create("http://localhost:8081/assets/studio_env_4k.hdr"),
+            "http://localhost:8081/assets/studio_env_4k.hdr",
             assetStorageAdapter.constructLocation("studio_env_4k.hdr")
         )
     }
 
     @Test
-    fun `calls the persistencePort to save the asset`() {
+    suspend fun `calls the persistencePort to save the asset`() {
         val assetRepository = mockk<AssetRepository>()
         val assetStorageConfiguration = AssetStorageConfiguration(
             "http://localhost:8081/assets",
@@ -56,11 +53,11 @@ class AssetStorageAdapterTest {
         //val assetStorageAdapter = AssetStorageAdapter(assetRepository, assetStorageConfiguration)
         val assetStorageAdapter = spyk(AssetStorageAdapter(assetRepository, assetStorageConfiguration))
 
-        every { assetRepository.save(any()) } returns AssetEntity(1, "", "", AssetType.Environment)
+        coEvery { assetRepository.save(any()) } returns AssetEntity(1, "", "", AssetType.Environment)
 
         assetStorageAdapter.persistAsset("some-asset", file)
 
-        verify { assetStorageAdapter.writeToDisk(file) }
+        coVerify { assetStorageAdapter.writeToDisk(file) }
     }
 
 
@@ -88,7 +85,7 @@ class AssetStorageAdapterTest {
     }
 
     @Test
-    fun `writes to the proper path in the filesystem`() {
+    suspend fun `writes to the proper path in the filesystem`() {
         val assetRepository = mockk<AssetRepository>()
         val assetStorageConfiguration = AssetStorageConfiguration(
             "http://localhost:8081/assets",

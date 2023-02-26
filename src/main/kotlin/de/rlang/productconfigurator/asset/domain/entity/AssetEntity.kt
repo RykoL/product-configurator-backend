@@ -2,6 +2,7 @@ package de.rlang.productconfigurator.asset.domain.entity
 
 import de.rlang.productconfigurator.asset.domain.model.AssetType
 import jakarta.persistence.*
+import org.hibernate.annotations.Type
 
 @Entity(name = "asset")
 class AssetEntity(
@@ -11,6 +12,7 @@ class AssetEntity(
     val id: Long?,
     val name: String,
     val location: String,
+
     @Enumerated(EnumType.STRING)
     val assetType: AssetType
 )

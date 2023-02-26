@@ -5,7 +5,7 @@ create table asset
     id   SERIAL PRIMARY KEY,
     name varchar(255) NOT NULL,
     location varchar NOT NULL,
-    asset_type asset_type NOT NULL
+    asset_type varchar NOT NULL
 );
 
 INSERT INTO asset(name, location, asset_type) VALUES('brown_photostudio_02_4k.hdr', '/assets/brown_photostudio_02_4k.hdr', 'environment');
