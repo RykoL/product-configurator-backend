@@ -1,7 +1,7 @@
 package de.rlang.productconfigurator.scene.application
 
 import de.rlang.productconfigurator.scene.domain.model.Environment
-import de.rlang.productconfigurator.scene.domain.ports.inbound.GetAllEnvironmentsUseCase
+import de.rlang.productconfigurator.asset.domain.ports.inbound.GetAllEnvironmentsUseCase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test

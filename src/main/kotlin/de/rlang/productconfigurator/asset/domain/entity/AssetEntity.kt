@@ -2,7 +2,6 @@ package de.rlang.productconfigurator.asset.domain.entity
 
 import de.rlang.productconfigurator.asset.domain.model.AssetType
 import jakarta.persistence.*
-import org.hibernate.annotations.Type
 
 @Entity(name = "asset")
 class AssetEntity(
