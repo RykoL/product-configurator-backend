@@ -8,9 +8,9 @@ import org.springframework.http.codec.multipart.FilePart
 import org.springframework.stereotype.Service
 
 @Service
-class UploadEnvironmentService(val assetStoragePort: AssetStoragePort, createEnvironmentPort: CreateEnvironmentPort) : UploadEnvironmentUseCase {
+class UploadEnvironmentService(val assetStoragePort: AssetStoragePort, val createEnvironmentPort: CreateEnvironmentPort) : UploadEnvironmentUseCase {
     override fun uploadEnvironment(name: String, file: FilePart): Environment {
         val asset = assetStoragePort.persistAsset(name, file)
-        return Environment(1, "Studio Environment", asset)
+        return createEnvironmentPort.createEnvironment(name, asset)
     }
 }

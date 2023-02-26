@@ -27,7 +27,7 @@ class AssetStorageAdapter(
     override fun persistAsset(name: String, file: FilePart): Asset {
         runBlocking { writeToDisk(file) }
         val location = constructLocation(file.filename())
-        var assetEntity = AssetEntity(null, name, location, AssetType.Environment)
+        var assetEntity = AssetEntity(null, file.filename(), location, AssetType.Environment)
         return toAssetModel(assetRepository.save(assetEntity))
     }
 
