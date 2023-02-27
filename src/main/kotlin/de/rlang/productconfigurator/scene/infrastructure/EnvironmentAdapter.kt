@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class EnvironmentAdapter(val environmentRepository: EnvironmentRepository) : EnvironmentPort {
-    override fun defaultEnvironment(): Environment = Environment(0, "Studio")
+    override fun defaultEnvironment(): Environment = environmentRepository.findById(1).map(::toEnvironmentModel).get()
 
     override fun getAllEnvironments(): List<Environment> =
         environmentRepository.findAll().map(::toEnvironmentModel)

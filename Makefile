@@ -2,7 +2,10 @@ LOCAL_POSTGRES_URL=jdbc:postgresql://localhost:5432/product_configurator
 LOCAL_POSTGRES_USER=product_configurator
 LOCAL_POSTGRES_PASSWORD=product_configurator
 
-.PHONY=start-test-db migrate prune connect
+.PHONY=start-test-db migrate prune connect precommit
+
+precommit: start-test-db
+	gradle clean testUnit testIntegration
 
 start-db:
 	docker-compose -f docker-compose.yml up -d --force-recreate
@@ -10,7 +13,6 @@ start-db:
 
 start-test-db:
 	docker-compose -f docker-compose.test.yml up -d --force-recreate
-
 
 migrate: export FLYWAY_URL=$(LOCAL_POSTGRES_URL)
 migrate: export FLYWAY_USER=$(LOCAL_POSTGRES_USER)

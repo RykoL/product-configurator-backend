@@ -9,7 +9,7 @@ fun fromSceneDAO(sceneDao: SceneDAO): Scene =
         sceneDao.id!!,
         sceneDao.name,
         mutableListOf(),
-        Environment(sceneDao.environment.id!!, sceneDao.environment.name)
+        toEnvironmentModel(sceneDao.environment)
     )
 
 fun toSceneEntity(scene: Scene): SceneDAO = SceneDAO(scene.id, scene.name, toEnvironmentEntity(scene.environment))

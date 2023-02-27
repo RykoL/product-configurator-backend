@@ -8,8 +8,8 @@ create table asset
     asset_type varchar NOT NULL
 );
 
-INSERT INTO asset(name, location, asset_type) VALUES('brown_photostudio_02_4k.hdr', '/assets/brown_photostudio_02_4k.hdr', 'Environment');
-INSERT INTO asset(name, location, asset_type) VALUES('blouberg_sunrise_2_4k.hdr', '/assets/blouberg_sunrise_2_4k.hdr', 'Environment');
+INSERT INTO asset(name, location, asset_type) VALUES('brown_photostudio_02_4k.hdr', 'http://localhost:8081/assets/brown_photostudio_02_4k.hdr', 'Environment');
+INSERT INTO asset(name, location, asset_type) VALUES('blouberg_sunrise_2_4k.hdr', 'http://localhost:8081/assets/blouberg_sunrise_2_4k.hdr', 'Environment');
 
 ALTER TABLE environment ADD COLUMN asset_id BIGINT;
 

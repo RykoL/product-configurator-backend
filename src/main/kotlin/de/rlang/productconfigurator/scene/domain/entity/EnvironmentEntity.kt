@@ -9,4 +9,7 @@ class EnvironmentEntity(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "environment_id_seq")
     var id: Long?,
     val name: String,
+
+    @OneToOne
+    val asset: SceneAssetEntity
 )

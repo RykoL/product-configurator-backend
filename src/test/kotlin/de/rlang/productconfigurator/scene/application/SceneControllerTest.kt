@@ -3,6 +3,8 @@ package de.rlang.productconfigurator.scene.application
 import arrow.core.Either
 import de.rlang.productconfigurator.scene.application.request.ChangeEnvironmentRequest
 import de.rlang.productconfigurator.scene.application.request.CreateSceneRequest
+import de.rlang.productconfigurator.scene.domain.model.Asset
+import de.rlang.productconfigurator.scene.domain.model.AssetType
 import de.rlang.productconfigurator.scene.domain.model.Environment
 import de.rlang.productconfigurator.scene.domain.model.Scene
 import de.rlang.productconfigurator.scene.domain.ports.inbound.ChangeEnvironmentUseCase
@@ -14,6 +16,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
+import java.net.URI
 
 class SceneControllerTest {
 
@@ -38,7 +41,7 @@ class SceneControllerTest {
             1,
             "New Scene 1",
             mutableListOf(),
-            Environment(1, "Studio")
+            Environment(1, "Studio", Asset(1, "Studio", URI.create(""), AssetType.Environment))
         )
 
         webTestClient.post().uri("/v1/scenes")
@@ -60,7 +63,7 @@ class SceneControllerTest {
             1,
             "New Scene 1",
             mutableListOf(),
-            Environment(1, "Studio")
+            Environment(1, "Studio", Asset(1, "Studio", URI.create(""), AssetType.Environment))
         )
 
         webTestClient.get().uri("/v1/scenes/$sceneId")
@@ -83,7 +86,14 @@ class SceneControllerTest {
         val sceneId = 1L
 
         every { changeEnvironmentUseCase.changeEnvironment(sceneId, changeEnvironmentRequest.environmentId) } returns
-                Either.Right(Scene(1, "New Scene 1", mutableListOf(), Environment(2, "Beach")))
+                Either.Right(
+                    Scene(
+                        1,
+                        "New Scene 1",
+                        mutableListOf(),
+                        Environment(2, "Beach", Asset(2, "Beach", URI.create(""), AssetType.Environment))
+                    )
+                )
 
         webTestClient.put().uri("/v1/scenes/$sceneId/environment")
             .body(Mono.just(changeEnvironmentRequest), ChangeEnvironmentRequest::class.java)

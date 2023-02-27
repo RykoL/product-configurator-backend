@@ -4,6 +4,7 @@ import de.rlang.productconfigurator.asset.configuration.AssetStorageConfiguratio
 import de.rlang.productconfigurator.asset.domain.entity.AssetEntity
 import de.rlang.productconfigurator.asset.domain.model.AssetType
 import io.mockk.*
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.core.io.buffer.DataBuffer
@@ -26,7 +27,7 @@ class AssetStorageAdapterTest {
         }
 
         override fun filename(): String = "studio_env_4k.hdr"
-        override fun transferTo(dest: Path): Mono<Void> = Mono.never()
+        override fun transferTo(dest: Path): Mono<Void> = Mono.empty()
     }
 
     @Test
@@ -44,20 +45,21 @@ class AssetStorageAdapterTest {
     }
 
     @Test
-    suspend fun `calls the persistencePort to save the asset`() {
+    fun `calls the persistencePort to save the asset`() {
         val assetRepository = mockk<AssetRepository>()
         val assetStorageConfiguration = AssetStorageConfiguration(
             "http://localhost:8081/assets",
             "./assets"
         )
-        //val assetStorageAdapter = AssetStorageAdapter(assetRepository, assetStorageConfiguration)
-        val assetStorageAdapter = spyk(AssetStorageAdapter(assetRepository, assetStorageConfiguration))
+        runBlocking {
+            val assetStorageAdapter = spyk(AssetStorageAdapter(assetRepository, assetStorageConfiguration))
 
-        coEvery { assetRepository.save(any()) } returns AssetEntity(1, "", "", AssetType.Environment)
+            coEvery { assetRepository.save(any()) } returns AssetEntity(1, "", "", AssetType.Environment)
 
-        assetStorageAdapter.persistAsset("some-asset", file)
+            assetStorageAdapter.persistAsset("some-asset", file)
 
-        coVerify { assetStorageAdapter.writeToDisk(file) }
+            coVerify { assetStorageAdapter.writeToDisk(file) }
+        }
     }
 
 

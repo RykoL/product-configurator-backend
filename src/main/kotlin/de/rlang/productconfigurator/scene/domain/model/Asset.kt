@@ -1,8 +1,9 @@
 package de.rlang.productconfigurator.scene.domain.model
 
+import java.net.URI
+
 enum class AssetType {
-    GLTF,
-    HDRI
+    Environment
 }
 
-data class Asset(val id: String, val path: String, val type: AssetType)
+data class Asset(val id: Long, val name: String, val location: URI, val type: AssetType)
