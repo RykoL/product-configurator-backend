@@ -9,10 +9,11 @@ services:
       - POSTGRES_PASSWORD=product_configurator
     ports:
       - "5432:5432"
-  file-server:
-    image: nginx
-    container_name: product-configurator-file-server
+  gateway:
+    image: caddy
+    container_name: product-configurator-gateway
     ports:
-      - "8081:80"
+      - "8081:8081"
     volumes:
       - $PWD/assets:/var/www/assets
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile

@@ -1,0 +1,9 @@
+:8081 {
+  handle_path /* {
+    header {
+        Access-Control-Allow-Origin: *
+    }
+    root * /var/www/
+    file_server
+  }
+}
