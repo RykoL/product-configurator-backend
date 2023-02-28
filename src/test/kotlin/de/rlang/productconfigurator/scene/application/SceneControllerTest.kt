@@ -3,10 +3,7 @@ package de.rlang.productconfigurator.scene.application
 import arrow.core.Either
 import de.rlang.productconfigurator.scene.application.request.ChangeEnvironmentRequest
 import de.rlang.productconfigurator.scene.application.request.CreateSceneRequest
-import de.rlang.productconfigurator.scene.domain.model.Asset
-import de.rlang.productconfigurator.scene.domain.model.AssetType
-import de.rlang.productconfigurator.scene.domain.model.Environment
-import de.rlang.productconfigurator.scene.domain.model.Scene
+import de.rlang.productconfigurator.scene.domain.model.*
 import de.rlang.productconfigurator.scene.domain.ports.inbound.ChangeEnvironmentUseCase
 import de.rlang.productconfigurator.scene.domain.ports.inbound.CreateSceneUseCase
 import de.rlang.productconfigurator.scene.domain.ports.inbound.GetSceneUseCase
@@ -41,7 +38,11 @@ class SceneControllerTest {
             1,
             "New Scene 1",
             mutableListOf(),
-            Environment(1, "Studio", Asset(1, "Studio", URI.create(""), AssetType.Environment))
+            Environment(
+                1,
+                "Studio",
+                Asset(1, "Studio", URI.create(""), AssetType.Environment, Matrix4.default())
+            )
         )
 
         webTestClient.post().uri("/v1/scenes")
@@ -63,7 +64,7 @@ class SceneControllerTest {
             1,
             "New Scene 1",
             mutableListOf(),
-            Environment(1, "Studio", Asset(1, "Studio", URI.create(""), AssetType.Environment))
+            Environment(1, "Studio", Asset(1, "Studio", URI.create(""), AssetType.Environment, Matrix4.default()))
         )
 
         webTestClient.get().uri("/v1/scenes/$sceneId")
@@ -91,7 +92,11 @@ class SceneControllerTest {
                         1,
                         "New Scene 1",
                         mutableListOf(),
-                        Environment(2, "Beach", Asset(2, "Beach", URI.create(""), AssetType.Environment))
+                        Environment(
+                            2,
+                            "Beach",
+                            Asset(2, "Beach", URI.create(""), AssetType.Environment, Matrix4.default())
+                        )
                     )
                 )
 

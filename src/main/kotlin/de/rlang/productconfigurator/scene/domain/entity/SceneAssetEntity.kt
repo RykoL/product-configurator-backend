@@ -12,7 +12,7 @@ class SceneAssetEntity(
     val id: Long?,
     val name: String,
     val location: String,
-
     @Enumerated(EnumType.STRING)
-    val assetType: AssetType
+    val assetType: AssetType,
+    val transform: Array<Array<Float>>
 )

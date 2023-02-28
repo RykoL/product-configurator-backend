@@ -1,10 +1,7 @@
 package de.rlang.productconfigurator.scene.domain.service
 
 import arrow.core.Either
-import de.rlang.productconfigurator.scene.domain.model.Asset
-import de.rlang.productconfigurator.scene.domain.model.AssetType
-import de.rlang.productconfigurator.scene.domain.model.Environment
-import de.rlang.productconfigurator.scene.domain.model.Scene
+import de.rlang.productconfigurator.scene.domain.model.*
 import de.rlang.productconfigurator.scene.domain.ports.outbound.EnvironmentPort
 import de.rlang.productconfigurator.scene.domain.ports.outbound.ScenePort
 import de.rlang.productconfigurator.scene.domain.ports.service.ChangeEnvironmentService
@@ -28,14 +25,18 @@ class ChangeEnvironmentServiceTest {
             2,
             "New Scene",
             mutableListOf(),
-            environment = Environment(1, "Studio", Asset(1, "Studio", URI.create(""), AssetType.Environment))
+            environment = Environment(
+                1,
+                "Studio",
+                Asset(1, "Studio", URI.create(""), AssetType.Environment, Matrix4.default())
+            )
         )
 
         every { environmentPort.getEnvironment(3) } returns Either.Right(
             Environment(
                 3,
                 "Beach",
-                Asset(1, "Studio", URI.create(""), AssetType.Environment)
+                Asset(1, "Studio", URI.create(""), AssetType.Environment, Matrix4.default())
             )
         )
 
@@ -44,7 +45,11 @@ class ChangeEnvironmentServiceTest {
             2,
             "New Scene",
             mutableListOf(),
-            environment = Environment(3, "Beach", Asset(1, "Studio", URI.create(""), AssetType.Environment))
+            environment = Environment(
+                3,
+                "Beach",
+                Asset(1, "Studio", URI.create(""), AssetType.Environment, Matrix4.default())
+            )
         )
         every { scenePort.saveScene(any()) } returns expectedScene
 

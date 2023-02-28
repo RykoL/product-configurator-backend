@@ -6,4 +6,10 @@ enum class AssetType {
     Environment
 }
 
-data class Asset(val id: Long, val name: String, val location: URI, val type: AssetType)
+data class Asset(
+    val id: Long,
+    val name: String,
+    val location: URI,
+    val type: AssetType,
+    val transform: Matrix4
+)
