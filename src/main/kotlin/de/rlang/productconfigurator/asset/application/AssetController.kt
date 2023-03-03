@@ -1,5 +1,6 @@
 package de.rlang.productconfigurator.asset.application
 
+import de.rlang.productconfigurator.asset.domain.model.Asset
 import de.rlang.productconfigurator.asset.domain.ports.inbound.UploadAssetUseCase
 import org.springframework.http.ResponseEntity
 import org.springframework.http.codec.multipart.FilePart
@@ -19,8 +20,8 @@ class AssetController(val uploadEnvironmentUseCase: UploadAssetUseCase) {
         @RequestPart("name") name: String,
         @RequestPart("type") assetType: String,
         @RequestPart("environment") environment: FilePart
-    ): ResponseEntity<Unit> {
+    ): ResponseEntity<Asset> {
         val asset = uploadEnvironmentUseCase.uploadAsset(name, environment)
-        return ResponseEntity.created(URI.create("/v1/assets/${asset.id}")).build()
+        return ResponseEntity.created(URI.create("/v1/assets/${asset.id}")).body(asset)
     }
 }

@@ -18,7 +18,7 @@ class EnvironmentAssetController(
 ) {
 
     @PostMapping
-    fun createEnvironment(@RequestBody createEnvironmentRequest: CreateEnvironmentRequest): ResponseEntity<Unit> =
+    fun createEnvironment(@RequestBody createEnvironmentRequest: CreateEnvironmentRequest): ResponseEntity<Environment> =
         createEnvironmentUseCase.createEnvironment(
             createEnvironmentRequest.name,
             createEnvironmentRequest.radius,
@@ -26,7 +26,11 @@ class EnvironmentAssetController(
             createEnvironmentRequest.assetId
         ).fold(
             { ResponseEntity.notFound().build() },
-            { ResponseEntity.created(URI.create("/v1/assets/environments/${it.id}")).build() }
+            {
+                ResponseEntity
+                    .created(URI.create("/v1/assets/environments/${it.id}"))
+                    .body(it)
+            }
         )
 
     @GetMapping("")
