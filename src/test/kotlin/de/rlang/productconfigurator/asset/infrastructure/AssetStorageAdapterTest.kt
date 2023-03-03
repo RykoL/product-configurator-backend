@@ -12,8 +12,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.codec.multipart.FilePart
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.net.URI
-import java.net.URL
 import java.nio.file.Path
 import kotlin.io.path.Path
 
@@ -37,7 +35,7 @@ class AssetStorageAdapterTest {
             "http://localhost:8081/assets/",
             "./assets"
         )
-        val assetStorageAdapter = AssetStorageAdapter(assetRepository, assetStorageConfiguration)
+        val assetStorageAdapter = AssetAdapter(assetRepository, assetStorageConfiguration)
         assertEquals(
             "http://localhost:8081/assets/studio_env_4k.hdr",
             assetStorageAdapter.constructLocation("studio_env_4k.hdr")
@@ -52,7 +50,7 @@ class AssetStorageAdapterTest {
             "./assets"
         )
         runBlocking {
-            val assetStorageAdapter = spyk(AssetStorageAdapter(assetRepository, assetStorageConfiguration))
+            val assetStorageAdapter = spyk(AssetAdapter(assetRepository, assetStorageConfiguration))
 
             coEvery { assetRepository.save(any()) } returns AssetEntity(1, "", "", AssetType.Environment)
 
@@ -70,7 +68,7 @@ class AssetStorageAdapterTest {
             "http://localhost:8081/assets",
             "./assets"
         )
-        val assetStorageAdapter = AssetStorageAdapter(assetRepository, assetStorageConfiguration)
+        val assetStorageAdapter = AssetAdapter(assetRepository, assetStorageConfiguration)
 
         val expectedEntity = AssetEntity(
             1,
@@ -94,7 +92,7 @@ class AssetStorageAdapterTest {
             "/var/assets"
         )
 
-        val assetStorageAdapter = AssetStorageAdapter(assetRepository, assetStorageConfiguration)
+        val assetStorageAdapter = AssetAdapter(assetRepository, assetStorageConfiguration)
         val fileMock = mockk<FilePart>()
 
         every { fileMock.filename() } returns "studio_env_4k.hdr"

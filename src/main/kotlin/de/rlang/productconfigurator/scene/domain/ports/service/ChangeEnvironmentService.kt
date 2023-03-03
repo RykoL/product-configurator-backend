@@ -1,7 +1,7 @@
 package de.rlang.productconfigurator.scene.domain.ports.service
 
 import arrow.core.Either
-import de.rlang.productconfigurator.scene.domain.error.DomainError
+import de.rlang.productconfigurator.error.DomainError
 import de.rlang.productconfigurator.scene.domain.model.Scene
 import de.rlang.productconfigurator.scene.domain.ports.inbound.ChangeEnvironmentUseCase
 import de.rlang.productconfigurator.scene.domain.ports.outbound.EnvironmentPort

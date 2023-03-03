@@ -2,8 +2,7 @@ package de.rlang.productconfigurator.asset.domain.service
 
 import de.rlang.productconfigurator.asset.domain.model.Asset
 import de.rlang.productconfigurator.asset.domain.model.AssetType
-import de.rlang.productconfigurator.asset.domain.model.Environment
-import de.rlang.productconfigurator.asset.domain.ports.outbound.AssetStoragePort
+import de.rlang.productconfigurator.asset.domain.ports.outbound.AssetPort
 import de.rlang.productconfigurator.asset.domain.ports.outbound.CreateEnvironmentPort
 import io.mockk.every
 import io.mockk.mockk
@@ -21,9 +20,9 @@ class UploadEnvironmentServiceTest {
 
     @Test
     fun `persists an asset and links it to an environment when uploading`() {
-        val assetStoragePort = mockk<AssetStoragePort>()
+        val assetPort = mockk<AssetPort>()
         val createEnvironmentPort = mockk<CreateEnvironmentPort>()
-        val uploadEnvironmentService = UploadEnvironmentService(assetStoragePort, createEnvironmentPort)
+        val uploadEnvironmentService = UploadAssetService(assetPort)
 
         val file = object : FilePart {
             override fun name(): String = "Studio Environment"
@@ -36,42 +35,22 @@ class UploadEnvironmentServiceTest {
             override fun transferTo(dest: Path): Mono<Void> = Mono.never()
         }
 
-        every { assetStoragePort.persistAsset("Studio Environment", file) } returns Asset(
+        every { assetPort.persistAsset("Studio Environment", file) } returns Asset(
             1,
             "studio_env_4k.hdr",
             URI.create("http://localhost:8081/assets/studio_env_4k.hdr"),
             AssetType.Environment
         )
 
-        every {
-            createEnvironmentPort.createEnvironment(
-                "Studio Environment",
-                Asset(
-                    1, "studio_env_4k.hdr", URI.create("http://localhost:8081/assets/studio_env_4k.hdr"),
-                    AssetType.Environment
-                )
-            )
-        } returns Environment(
-            1, "Studio Environment", Asset(
-                1,
-                "studio_env_4k.hdr",
-                URI.create("http://localhost:8081/assets/studio_env_4k.hdr"),
-                AssetType.Environment
-            )
+        val environment = uploadEnvironmentService.uploadAsset("Studio Environment", file)
+
+        val expected = Asset(
+            1,
+            "studio_env_4k.hdr",
+            URI.create("http://localhost:8081/assets/studio_env_4k.hdr"),
+            AssetType.Environment
         )
 
-
-        val environment = uploadEnvironmentService.uploadEnvironment("Studio Environment", file)
-
-        val expectedEnv = Environment(
-            1, "Studio Environment", Asset(
-                1,
-                "studio_env_4k.hdr",
-                URI.create("http://localhost:8081/assets/studio_env_4k.hdr"),
-                AssetType.Environment
-            )
-        )
-
-        assertEquals(expectedEnv, environment)
+        assertEquals(expected, environment)
     }
 }

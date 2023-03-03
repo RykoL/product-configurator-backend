@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class CreateEnvironmentAdapter(val environmentRepository: EnvironmentAssetRepository) : CreateEnvironmentPort {
-    override fun createEnvironment(name: String, asset: Asset): Environment {
+    override fun createEnvironment(name: String, radius: Int, height: Int, asset: Asset): Environment {
         var environmentEntity = EnvironmentEntity(
             id = null,
             name = name,
+            radius = radius,
+            height = height,
             asset = toAssetEntity(asset)
         )
 
